@@ -1,6 +1,21 @@
 version: 2
 
 models:
+  - name: jaffle_test
+    description: One row per order with customer details and order information
+
+    columns:
+      - name: order_id
+        description: This is a unique identifier for an order
+        tests:
+          - unique
+          - not_null
+
+      - name: customer_id
+        description: Foreign key to the customers table
+        tests:
+          - not_null
+
   - name: customers
     description: This table has basic information about a customer, as well as some derived facts based on a customer's orders
 
@@ -44,8 +59,9 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('customers')
-              field: customer_id
+              arguments:
+                to: ref('customers')
+                field: customer_id
 
       - name: order_date
         description: Date (UTC) that the order was placed
@@ -54,7 +70,8 @@ models:
         description: '{{ doc("orders_status") }}'
         tests:
           - accepted_values:
-              values: ['placed', 'shipped', 'completed', 'return_pending', 'returned']
+              arguments:
+                values: ['placed', 'shipped', 'completed', 'return_pending', 'returned']
 
       - name: amount
         description: Total amount (AUD) of the order
